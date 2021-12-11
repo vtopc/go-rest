@@ -22,11 +22,12 @@ jobs:
       - name: Test
         run: make test
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage.txt
-          fail_ci_if_error: true
+# TODO: configure Codecov
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v1
+#        with:
+#          file: ./coverage.txt
+#          fail_ci_if_error: true
 
   lint:
     name: lint
