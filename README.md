@@ -1,6 +1,6 @@
 # restclient
 
-Just a wrapper over http.Client with better errors and REST API support.
+Just a wrapper over http.Client with better errors and JSON unmarshaling.
 
 ## TODO
-* Retries(https://github.com/cristalhq/hedgedhttp)
+* Linters
