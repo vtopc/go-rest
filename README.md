@@ -23,5 +23,5 @@ This will update yours go.mod file.
 [ci-img]: https://github.com/vtopc/go-rest/workflows/CI/badge.svg
 [ci-url]: https://github.com/vtopc/go-rest/actions?query=workflow%3A%22CI%22
 
-[codecov-img]: https://codecov.io/gh/vtopc/go-rest/branch/master/graph/badge.svg?token=SRJ6WXRMTR
+[codecov-img]: https://codecov.io/gh/vtopc/go-rest/branch/master/graph/badge.svg?token=SQCEM6N2PH
 [codecov-url]: https://codecov.io/gh/vtopc/go-rest
