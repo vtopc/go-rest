@@ -1,14 +1,24 @@
 package interceptors
 
-const (
-	ContentTypeHeaderValue = "application/json; charset=utf-8"
+import (
+	"net/http"
 )
 
-// const (
-// 	contentTypeHeaderName = "Content-Type"
-// )
+const ContentTypeHeaderValue = "application/json; charset=utf-8"
 
-// TODO: add ReqContentType interceptor:
-// 	if req.Body != nil && req.Body != http.NoBody {
-// 		req.Header.Set(contentTypeHeaderName, i.ContentType)
-// 	}
+const contentTypeHeaderName = "Content-Type"
+
+// SetReqContentType sets Content-Type header to 'v' for requests with not empty body.
+func SetReqContentType(client *http.Client, v string) error {
+	return SetReq(client, setContentType(v))
+}
+
+func setContentType(v string) ReqUpdater {
+	return func(req *http.Request) error {
+		if req.Body != nil && req.Body != http.NoBody {
+			req.Header.Set(contentTypeHeaderName, v)
+		}
+
+		return nil
+	}
+}
