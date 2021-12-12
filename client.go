@@ -12,7 +12,6 @@ import (
 )
 
 // HTTPClient a HTTP client
-// TODO: switch to this interface?
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -25,6 +24,7 @@ type Client struct {
 // New returns REST API Client.
 // Use https://github.com/cristalhq/hedgedhttp for retries.
 // Check https://github.com/vtopc/restclient/tree/master/interceptors for middlewares/interceptors.
+// TODO: switch to HTTPClient interface?
 func New(client *http.Client) *Client {
 	if client == nil {
 		client = defaults.NewHTTPClient()
