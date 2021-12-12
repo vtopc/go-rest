@@ -1,4 +1,4 @@
-module github.com/vtopc/restclient
+module github.com/vtopc/go-rest
 
 go 1.17
 

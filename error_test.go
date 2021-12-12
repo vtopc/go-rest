@@ -1,4 +1,4 @@
-package restclient
+package rest
 
 import (
 	"errors"
@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/vtopc/restclient/defaults"
+	"github.com/vtopc/go-rest/defaults"
 )
 
 func TestAPIError_Error(t *testing.T) {

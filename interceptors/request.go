@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/vtopc/restclient/defaults"
+	"github.com/vtopc/go-rest/defaults"
 )
 
 // ReqUpdater updates HTTP request.

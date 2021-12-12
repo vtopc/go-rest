@@ -1,4 +1,4 @@
-# restclient
+# rest
 
 REST API client.
 

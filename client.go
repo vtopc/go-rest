@@ -1,4 +1,4 @@
-package restclient
+package rest
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/vtopc/restclient/defaults"
+	"github.com/vtopc/go-rest/defaults"
 )
 
 // HTTPClient a HTTP client

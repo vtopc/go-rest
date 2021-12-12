@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/vtopc/restclient/interceptors"
+	"github.com/vtopc/go-rest/interceptors"
 )
 
 func TestSetReqHeader(t *testing.T) {
