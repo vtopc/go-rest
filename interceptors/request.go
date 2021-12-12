@@ -10,8 +10,8 @@ import (
 // ReqUpdater updates HTTP request.
 type ReqUpdater func(req *http.Request) error
 
-// SetReqInterceptor updates every HTTP request with function `fn`.
-func SetReqInterceptor(client *http.Client, fn ReqUpdater) error {
+// SetReq updates every HTTP request with function `fn`.
+func SetReq(client *http.Client, fn ReqUpdater) error {
 	if client == nil {
 		return errors.New("no client provided")
 	}

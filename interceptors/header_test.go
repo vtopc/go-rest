@@ -11,7 +11,7 @@ import (
 	"github.com/vtopc/restclient/interceptors"
 )
 
-func TestSetReqHeaderInterceptor(t *testing.T) {
+func TestSetReqHeader(t *testing.T) {
 	const (
 		k = "foo"
 		v = "bar"
@@ -27,7 +27,7 @@ func TestSetReqHeaderInterceptor(t *testing.T) {
 	defer server.Close()
 
 	client := server.Client()
-	err := interceptors.SetReqHeaderInterceptor(client, k, v)
+	err := interceptors.SetReqHeader(client, k, v)
 	require.NoError(t, err)
 
 	req, err := http.NewRequest(http.MethodGet, server.URL, nil)
