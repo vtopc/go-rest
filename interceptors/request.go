@@ -1,6 +1,7 @@
 package interceptors
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/vtopc/restclient/defaults"
@@ -10,10 +11,9 @@ import (
 type ReqUpdater func(req *http.Request) error
 
 // SetReqInterceptor updates every HTTP request with function `fn`.
-func SetReqInterceptor(client *http.Client, fn ReqUpdater) {
+func SetReqInterceptor(client *http.Client, fn ReqUpdater) error {
 	if client == nil {
-		// TODO: return error instead?
-		client = defaults.NewHTTPClient()
+		return errors.New("no client provided")
 	}
 
 	tr := client.Transport
@@ -25,6 +25,8 @@ func SetReqInterceptor(client *http.Client, fn ReqUpdater) {
 		transport: tr,
 		fn:        fn,
 	}
+
+	return nil
 }
 
 type reqInterceptor struct {

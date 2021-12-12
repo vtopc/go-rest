@@ -27,7 +27,8 @@ func TestSetReqHeaderInterceptor(t *testing.T) {
 	defer server.Close()
 
 	client := server.Client()
-	interceptors.SetReqHeaderInterceptor(client, k, v)
+	err := interceptors.SetReqHeaderInterceptor(client, k, v)
+	require.NoError(t, err)
 
 	req, err := http.NewRequest(http.MethodGet, server.URL, nil)
 	require.NoError(t, err)
