@@ -7,16 +7,12 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"time"
+
+	"github.com/vtopc/restclient/defaults"
 )
 
-const (
-	contentTypeHeaderName  = "Content-Type"
-	contentTypeHeaderValue = "application/json; charset=utf-8"
-	defaultTimeout         = 30 * time.Second
-)
-
-// HTTPClient a http client
+// HTTPClient a HTTP client
+// TODO: switch to this interface?
 type HTTPClient interface {
 	Do(req *http.Request) (*http.Response, error)
 }
@@ -29,8 +25,12 @@ type Client struct {
 // New returns REST API Client.
 // Use https://github.com/cristalhq/hedgedhttp for retries.
 // Use `http.Client.Transport` for middlewares/interceptors:
-//  see https://stackoverflow.com/a/39528716 or https://github.com/f2prateek/train
-func New(client HTTPClient) *Client {
+//  see interceptors.go or https://github.com/f2prateek/train
+func New(client *http.Client) *Client {
+	if client == nil {
+		client = defaults.NewHTTPClient()
+	}
+
 	return &Client{httpClient: client}
 }
 
@@ -53,12 +53,6 @@ func (c *Client) Do(req *http.Request, v interface{}, expectedStatusCodes ...int
 	// Set defaults:
 	if len(expectedStatusCodes) == 0 {
 		expectedStatusCodes = []int{http.StatusOK}
-	}
-
-	ct := req.Header.Get(contentTypeHeaderName)
-	// TODO: move to wrappers:
-	if (req.Body != nil || req.Body != http.NoBody) && ct == "" {
-		req.Header.Set(contentTypeHeaderName, contentTypeHeaderValue)
 	}
 
 	err := c.do(req, v, expectedStatusCodes...)
@@ -108,13 +102,4 @@ func (c *Client) do(req *http.Request, v interface{}, expectedStatusCodes ...int
 	}
 
 	return nil
-}
-
-func newDefaultHTTPClient() *http.Client {
-	return &http.Client{
-		Timeout: defaultTimeout,
-		Transport: &http.Transport{
-			TLSHandshakeTimeout: defaultTimeout,
-		},
-	}
 }

@@ -8,6 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/vtopc/restclient/defaults"
 )
 
 func TestAPIError_Error(t *testing.T) {
@@ -33,7 +35,7 @@ func TestAPIError_Error(t *testing.T) {
 }
 
 func TestStatusCodeFromAPIError(t *testing.T) {
-	client := New(newDefaultHTTPClient())
+	client := New(defaults.NewHTTPClient())
 
 	type S struct {
 		Foo string `json:"foo"`
