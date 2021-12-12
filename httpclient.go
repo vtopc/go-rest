@@ -28,6 +28,8 @@ type Client struct {
 
 // New returns REST API Client.
 // Use https://github.com/cristalhq/hedgedhttp for retries.
+// Use `http.Client.Transport` for middlewares/interceptors:
+//  see https://stackoverflow.com/a/39528716 or https://github.com/f2prateek/train
 func New(client HTTPClient) *Client {
 	return &Client{httpClient: client}
 }
