@@ -35,7 +35,7 @@ func TestAPIError_Error(t *testing.T) {
 }
 
 func TestStatusCodeFromAPIError(t *testing.T) {
-	client := New(defaults.NewHTTPClient())
+	client := NewClient(defaults.NewHTTPClient())
 
 	type S struct {
 		Foo string `json:"foo"`

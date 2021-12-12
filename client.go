@@ -21,11 +21,11 @@ type Client struct {
 	httpClient HTTPClient
 }
 
-// New returns REST API Client.
+// NewClient returns REST API Client.
 // Use https://github.com/cristalhq/hedgedhttp for retries.
 // Check https://github.com/vtopc/restclient/tree/master/interceptors for middlewares/interceptors.
 // TODO: switch to HTTPClient interface?
-func New(client *http.Client) *Client {
+func NewClient(client *http.Client) *Client {
 	if client == nil {
 		client = defaults.NewHTTPClient()
 	}
