@@ -1,5 +1,7 @@
 # restclient
 
+REST API client.
+
 Just a wrapper over http.Client with better errors and JSON unmarshaling.
 
 ## TODOs
