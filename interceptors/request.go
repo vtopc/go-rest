@@ -16,6 +16,10 @@ func SetReqInterceptor(client *http.Client, fn ReqUpdater) error {
 		return errors.New("no client provided")
 	}
 
+	if fn == nil {
+		return errors.New("no ReqUpdater provided")
+	}
+
 	tr := client.Transport
 	if tr == nil {
 		tr = defaults.NewHTTPTransport()
