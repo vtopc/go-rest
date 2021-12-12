@@ -6,6 +6,13 @@ REST API client.
 
 Just a wrapper over http.Client with better errors and JSON unmarshaling.
 
+## Installation
+
+```shell
+go get github.com/vtopc/go-rest
+```
+This will update yours go.mod file.
+
 ## TODOs
 * Configure linters
 * Switch to https://github.com/json-iterator/go ? https://yalantis.com/blog/speed-up-json-encoding-decoding/
