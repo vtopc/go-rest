@@ -16,8 +16,6 @@ func NewHTTPClient() *http.Client {
 	}
 }
 
-func NewHTTPTransport() *http.Transport {
-	return &http.Transport{
-		TLSHandshakeTimeout: defaultTimeout,
-	}
+func NewHTTPTransport() http.RoundTripper {
+	return http.DefaultTransport
 }
