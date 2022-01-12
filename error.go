@@ -4,14 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 )
 
-// ReqError request error
+// ReqError request error.
 type ReqError struct {
-	Method string
-	URL    *url.URL
-	Err    error // wrapped error
+	// Req HTTP request
+	Req *http.Request
+
+	// Err is either an (*APIError) or error from (*http.Client).Do()
+	Err error
 }
 
 // NewReqError builds ReqError
@@ -21,15 +22,14 @@ func NewReqError(req *http.Request, wrappedErr error) error {
 	}
 
 	return &ReqError{
-		Method: req.Method,
-		URL:    req.URL,
-		Err:    wrappedErr,
+		Req: req,
+		Err: wrappedErr,
 	}
 }
 
 // Error implements error interface
 func (e *ReqError) Error() string {
-	return fmt.Sprintf("request %s %s failed: %s", e.Method, e.URL, e.Err)
+	return fmt.Sprintf("request %s %s failed: %s", e.Req.Method, e.Req.URL, e.Err)
 }
 
 // Unwrap provides compatibility for Go 1.13+ error chains.
@@ -39,15 +39,20 @@ func (e *ReqError) Unwrap() error {
 
 // APIError REST API error
 type APIError struct {
-	ResponseStatusCode  int // HTTP status code
 	ExpectedStatusCodes []int
-	Err                 error // wrapped error
+
+	// Resp HTTP response
+	Resp *http.Response
+
+	// Err is either error body or error from io.Copy.
+	// TODO: be more specific?
+	Err error
 }
 
 // Error implements error interface
 func (e *APIError) Error() string {
 	return fmt.Sprintf("wrong status code (%d not in %v): %s",
-		e.ResponseStatusCode, e.ExpectedStatusCodes, e.Err)
+		e.Resp.StatusCode, e.ExpectedStatusCodes, e.Err)
 }
 
 // Unwrap provides compatibility for Go 1.13+ error chains.

@@ -82,11 +82,9 @@ func (c *Client) do(req *http.Request, v interface{}, expectedStatusCodes ...int
 		}
 
 		return &APIError{
-			ResponseStatusCode:  resp.StatusCode,
+			Resp:                resp,
 			ExpectedStatusCodes: expectedStatusCodes,
-			// Err is either error body or io.Copy error.
-			// TODO: be more specific?
-			Err: err,
+			Err:                 err,
 		}
 	}
 

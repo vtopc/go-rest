@@ -19,7 +19,7 @@ func TestAPIError_Error(t *testing.T) {
 	}{
 		"all_fields": {
 			err: &APIError{
-				ResponseStatusCode:  400,
+				Resp:                &http.Response{StatusCode: 400},
 				ExpectedStatusCodes: []int{200},
 				Err:                 errors.New("internal fail"),
 			},
