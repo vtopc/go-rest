@@ -48,7 +48,7 @@ func TestStatusCodeFromAPIError(t *testing.T) {
 
 		v interface{} // for .Do(...)
 
-		wantErr        error
+		wantErr        bool
 		wantStatusCode int
 	}{
 		"no_errors": {
@@ -62,21 +62,21 @@ func TestStatusCodeFromAPIError(t *testing.T) {
 			statusCode:         400,
 			expectedStatusCode: 201,
 			body:               []byte(`{"errors":[{"message":"test error"}]}`),
-			wantErr:            errors.New("wrong status code (400 not in [201]): {\"errors\":[{\"message\":\"test error\"}]}"),
+			wantErr:            true,
 			wantStatusCode:     400,
 		},
 		"not_found": {
 			statusCode:         404,
 			expectedStatusCode: 200,
 			body:               []byte(`{"errors":[{"message":"the entity not found"}]}`),
-			wantErr:            errors.New("wrong status code (404 not in [200]): {\"errors\":[{\"message\":\"the entity not found\"}]}"),
+			wantErr:            true,
 			wantStatusCode:     404,
 		},
 		"not_APIError": {
 			statusCode:         200,
 			expectedStatusCode: 200,
 			body:               []byte(`{"foo":"bar"}`),
-			wantErr:            errors.New("failed to unmarshal the response body: json: Unmarshal(non-pointer chan struct {})"),
+			wantErr:            true,
 			v:                  make(chan struct{}), // a channel just to fail Unmarshal
 			wantStatusCode:     500,
 		},
@@ -85,7 +85,7 @@ func TestStatusCodeFromAPIError(t *testing.T) {
 			expectedStatusCode: 200,
 			body:               []byte(`{"foo":"bar"}`),
 			v:                  new(S),
-			wantErr:            errors.New(`wrong status code (201 not in [200]): {"foo":"bar"}`),
+			wantErr:            true,
 			wantStatusCode:     500,
 		},
 	}
@@ -109,10 +109,10 @@ func TestStatusCodeFromAPIError(t *testing.T) {
 
 			err = client.Do(req, tt.v, tt.expectedStatusCode)
 			t.Logf("got error: %v", err)
-			if tt.wantErr == nil {
-				assert.NoError(t, err)
+			if tt.wantErr {
+				assert.Error(t, err)
 			} else {
-				assert.EqualError(t, errors.Unwrap(err), tt.wantErr.Error())
+				assert.NoError(t, err)
 			}
 
 			// got := StatusCodeFromAPIError(err)

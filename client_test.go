@@ -24,6 +24,7 @@ func TestClientDo(t *testing.T) {
 		respBody           []byte
 		v                  interface{}
 		want               interface{}
+		wantErr            error
 		wantWrappedErr     error
 	}{
 		"positive_get": {
@@ -65,6 +66,16 @@ func TestClientDo(t *testing.T) {
 			wantWrappedErr:     errors.New("wrong status code (500 not in [200]): {\"error\":\"some error\"}"),
 		},
 
+		"negative_not_a_pointer": {
+			method:             http.MethodGet,
+			urlPostfix:         "/health",
+			statusCode:         http.StatusOK,
+			expectedStatusCode: http.StatusOK,
+			respBody:           []byte(`{"status":"ok"}`),
+			v:                  Struct{},
+			wantErr:            errors.New("json: Unmarshal(non-pointer rest.Struct)"),
+		},
+
 		// TODO: add more test cases
 	}
 
@@ -94,6 +105,10 @@ func TestClientDo(t *testing.T) {
 
 			// test:
 			err = c.Do(req, tt.v, tt.expectedStatusCode)
+			if tt.wantErr != nil {
+				require.EqualError(t, err, tt.wantErr.Error())
+				return
+			}
 			if tt.wantWrappedErr != nil {
 				require.EqualError(t, errors.Unwrap(err), tt.wantWrappedErr.Error())
 				return

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"github.com/vtopc/go-rest/defaults"
@@ -35,11 +36,18 @@ func NewClient(client *http.Client) *Client {
 
 // Do executes HTTP request.
 //
-// Stores the result in the value pointed to by v. If v is nil or not a pointer,
-// Do returns an InvalidUnmarshalError.
+// Stores the result in the value pointed to by v. If v is not a nil and not a pointer,
+// Do returns a json.InvalidUnmarshalError.
 // Use func `http.NewRequestWithContext` to create `req`.
 func (c *Client) Do(req *http.Request, v interface{}, expectedStatusCodes ...int) error {
-	// TODO: check that `v` is a pointer or nil
+	// check that `v` is a pointer or nil before doing the request.
+	if v != nil {
+		rv := reflect.ValueOf(v)
+		if rv.Kind() != reflect.Ptr {
+			return &json.InvalidUnmarshalError{Type: reflect.TypeOf(v)}
+		}
+	}
+
 	if req == nil {
 		return errors.New("empty request")
 	}
