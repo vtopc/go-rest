@@ -17,63 +17,73 @@ type Struct struct {
 
 func TestClientDo(t *testing.T) {
 	tests := map[string]struct {
-		method             string
-		urlPostfix         string
-		statusCode         int
-		expectedStatusCode int
-		respBody           []byte
-		v                  interface{}
-		want               interface{}
-		wantErr            error
-		wantWrappedErr     error
+		method              string
+		urlPostfix          string
+		statusCode          int
+		expectedStatusCodes []int
+		respBody            []byte
+		v                   interface{}
+		want                interface{}
+		wantErr             error
+		wantWrappedErr      error
 	}{
 		"positive_get": {
-			method:             http.MethodGet,
-			urlPostfix:         "/health",
-			statusCode:         http.StatusOK,
-			expectedStatusCode: http.StatusOK,
-			respBody:           []byte(`{"status":"ok"}`),
-			v:                  &Struct{},
-			want:               &Struct{Status: "ok"},
+			method:              http.MethodGet,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusOK,
+			expectedStatusCodes: []int{http.StatusOK},
+			respBody:            []byte(`{"status":"ok"}`),
+			v:                   &Struct{},
+			want:                &Struct{Status: "ok"},
+		},
+
+		"positive_multiple_statuses": {
+			method:              http.MethodPost,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusAccepted,
+			expectedStatusCodes: []int{http.StatusOK, http.StatusAccepted},
+			respBody:            []byte(`{"status":"ok"}`),
+			v:                   &Struct{},
+			want:                &Struct{Status: "ok"},
 		},
 
 		"positive_but_wrong_payload": {
-			method:             http.MethodGet,
-			urlPostfix:         "/health",
-			statusCode:         http.StatusOK,
-			expectedStatusCode: http.StatusOK,
-			respBody:           []byte(`{"error":"some error"}`),
-			v:                  &Struct{},
-			want:               &Struct{}, // zero values
+			method:              http.MethodGet,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusOK,
+			expectedStatusCodes: []int{http.StatusOK},
+			respBody:            []byte(`{"error":"some error"}`),
+			v:                   &Struct{},
+			want:                &Struct{}, // zero values
 		},
 
 		"positive_get_empty_body": {
-			method:             http.MethodGet,
-			urlPostfix:         "/health",
-			statusCode:         http.StatusNoContent,
-			expectedStatusCode: http.StatusNoContent,
-			respBody:           nil,
-			v:                  nil,
-			want:               nil,
+			method:              http.MethodGet,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusNoContent,
+			expectedStatusCodes: []int{http.StatusNoContent},
+			respBody:            nil,
+			v:                   nil,
+			want:                nil,
 		},
 
 		"negative_wrong_status_code": {
-			method:             http.MethodGet,
-			urlPostfix:         "/health",
-			statusCode:         http.StatusInternalServerError,
-			expectedStatusCode: http.StatusOK,
-			respBody:           []byte(`{"error":"some error"}`),
-			wantWrappedErr:     errors.New("wrong status code (500 not in [200]): {\"error\":\"some error\"}"),
+			method:              http.MethodGet,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusInternalServerError,
+			expectedStatusCodes: []int{http.StatusOK},
+			respBody:            []byte(`{"error":"some error"}`),
+			wantWrappedErr:      errors.New("wrong status code (500 not in [200]): {\"error\":\"some error\"}"),
 		},
 
 		"negative_not_a_pointer": {
-			method:             http.MethodGet,
-			urlPostfix:         "/health",
-			statusCode:         http.StatusOK,
-			expectedStatusCode: http.StatusOK,
-			respBody:           []byte(`{"status":"ok"}`),
-			v:                  Struct{},
-			wantErr:            errors.New("json: Unmarshal(non-pointer rest.Struct)"),
+			method:              http.MethodGet,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusOK,
+			expectedStatusCodes: []int{http.StatusOK},
+			respBody:            []byte(`{"status":"ok"}`),
+			v:                   Struct{},
+			wantErr:             errors.New("json: Unmarshal(non-pointer rest.Struct)"),
 		},
 
 		// TODO: add more test cases
@@ -104,7 +114,7 @@ func TestClientDo(t *testing.T) {
 			require.NoError(t, err)
 
 			// test:
-			err = c.Do(req, tt.v, tt.expectedStatusCode)
+			err = c.Do(req, tt.v, tt.expectedStatusCodes...)
 			if tt.wantErr != nil {
 				require.EqualError(t, err, tt.wantErr.Error())
 				return
