@@ -52,11 +52,6 @@ func (c *Client) Do(req *http.Request, v interface{}, expectedStatusCodes ...int
 		return errors.New("empty request")
 	}
 
-	// TODO: add support for the multiple status codes
-	if len(expectedStatusCodes) > 1 {
-		return errors.New("support for multiple status codes is not implemented")
-	}
-
 	// Set defaults:
 	if len(expectedStatusCodes) == 0 {
 		expectedStatusCodes = []int{http.StatusOK}
@@ -78,7 +73,15 @@ func (c *Client) do(req *http.Request, v interface{}, expectedStatusCodes ...int
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != expectedStatusCodes[0] {
+	var expected bool
+	for _, code := range expectedStatusCodes {
+		if resp.StatusCode == code {
+			expected = true
+			break
+		}
+	}
+
+	if !expected {
 		// Non expected status code.
 
 		buf := &strings.Builder{}
