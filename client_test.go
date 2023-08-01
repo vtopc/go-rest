@@ -71,6 +71,15 @@ func TestClientDo(t *testing.T) {
 			method:              http.MethodGet,
 			urlPostfix:          "/health",
 			statusCode:          http.StatusInternalServerError,
+			expectedStatusCodes: []int{http.StatusOK},
+			respBody:            []byte(`{"error":"some error"}`),
+			wantWrappedErr:      errors.New("wrong status code (500 not in [200]): {\"error\":\"some error\"}"),
+		},
+
+		"negative_wrong_status_codes": {
+			method:              http.MethodGet,
+			urlPostfix:          "/health",
+			statusCode:          http.StatusInternalServerError,
 			expectedStatusCodes: []int{http.StatusOK, http.StatusAccepted},
 			respBody:            []byte(`{"error":"some error"}`),
 			wantWrappedErr:      errors.New("wrong status code (500 not in [200, 202]): {\"error\":\"some error\"}"),
