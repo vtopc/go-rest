@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 // ReqError request error.
@@ -51,8 +53,13 @@ type APIError struct {
 
 // Error implements error interface
 func (e *APIError) Error() string {
-	return fmt.Sprintf("wrong status code (%d not in %v): %s",
-		e.Resp.StatusCode, e.ExpectedStatusCodes, e.Err)
+	codes := make([]string, 0, len(e.ExpectedStatusCodes))
+	for _, code := range e.ExpectedStatusCodes {
+		codes = append(codes, strconv.Itoa(code))
+	}
+
+	return fmt.Sprintf("wrong status code (%d not in [%s]): %s",
+		e.Resp.StatusCode, strings.Join(codes, ", "), e.Err)
 }
 
 // Unwrap provides compatibility for Go 1.13+ error chains.

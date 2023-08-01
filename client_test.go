@@ -71,9 +71,9 @@ func TestClientDo(t *testing.T) {
 			method:              http.MethodGet,
 			urlPostfix:          "/health",
 			statusCode:          http.StatusInternalServerError,
-			expectedStatusCodes: []int{http.StatusOK},
+			expectedStatusCodes: []int{http.StatusOK, http.StatusAccepted},
 			respBody:            []byte(`{"error":"some error"}`),
-			wantWrappedErr:      errors.New("wrong status code (500 not in [200]): {\"error\":\"some error\"}"),
+			wantWrappedErr:      errors.New("wrong status code (500 not in [200, 202]): {\"error\":\"some error\"}"),
 		},
 
 		"negative_not_a_pointer": {
