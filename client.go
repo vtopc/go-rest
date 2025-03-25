@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -104,7 +105,19 @@ func (c *Client) do(req *http.Request, v interface{}, expectedStatusCodes ...int
 		return nil
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(v)
+	reader := resp.Body
+
+	// Check if the response is encoded in gzip format
+	if resp.Header.Get("Content-Encoding") == "gzip" {
+		var err error
+		reader, err = gzip.NewReader(resp.Body)
+		if err != nil {
+			return fmt.Errorf("failed to read gzipped response body: %w", err)
+		}
+		defer reader.Close()
+	}
+
+	err = json.NewDecoder(reader).Decode(v)
 	if err != nil {
 		return fmt.Errorf("failed to unmarshal the response body: %w", err)
 	}
